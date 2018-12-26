@@ -1,15 +1,19 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 
+apply plugin: 'com.github.dcendents.android-maven'
+group='com.github.pinguo-zhouwei'
 android {
     compileSdkVersion 24
     buildToolsVersion "24.0.2"
+  //  resourcePrefix "customPop__"	//这个随便填
     defaultConfig {
-        applicationId "com.example.zhouwei.custompopwindow"
         minSdkVersion 16
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
     }
     buildTypes {
         release {
@@ -25,8 +29,5 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'com.android.support:appcompat-v7:24.2.1'
-    compile 'com.android.support:design:24.2.1'
     testCompile 'junit:junit:4.12'
-    //compile project(path: ':Library')
-    compile 'com.github.pinguo-zhouwei:CustomPopwindow:2.1.1'
 }

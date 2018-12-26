@@ -2,8 +2,17 @@
 
 由于每次写PopupWindow都要写很多重复代码，因此简单的封装了一个CustomPopWindow.封装了PopupWindow 的一些常用API，使用Builder模式，就像写AlertDialog 一样，链式配置。
 
+### 相关博客
 
-###Usage
+1，[通用PopupWindow，几行代码搞定PopupWindow弹窗](http://www.jianshu.com/p/9304d553aa67)
+
+2, [通用PopupWindow，几行代码搞定PopupWindow弹窗（续）](http://www.jianshu.com/p/46d13fe78099)
+
+3, [从源码剖析PopupWindow 兼容Android 6.0以上版本点击外部不消失](http://www.jianshu.com/p/c9a83decb314)
+
+### Usage
+
+**由于 1.0.0 版本 是托管到 Jcenter的，添加如下依赖：**
 
 Add the dependency to your build.gradle.
 
@@ -14,13 +23,46 @@ dependencies {
 }
 ```
 
+ **2.x 版本 代码托管到Jitpack, 需要如下依赖：**
+ 
+1. Add it in your root build.gradle ：
+ ```java
+     
+ allprojects {
+     epositories {
+         ...
+         maven {
+             url 'https://jitpack.io'
+ 
+         }
+ 
+ }
+ ```
+ 
+2. Add the dependency
+```java
+dependencies {
+	compile 'com.github.pinguo-zhouwei:CustomPopwindow:2.1.1'
+}
+```
+
 **示例效果图：**
 
-![效果图](image/popWindow.gif)
+![效果图](image/pop_window.gif)
 
-**使用方法：**
 
-更新日志：（添加弹出PopupWindow同时背景变暗的配置，添加配置动画）
+### 更新日志
+
+**v2.0.0：**
+
+* 1,添加弹出PopupWindow同时背景变暗的配置，添加配置动画
+
+**v2.1.0：**
+
+* 1, 兼容Android 6.0 、Android 7.0 点击PopupWindow 之外的区域可以控制 **显示/关闭popupWindow**
+* 2, 可以获取到PopupWindow实例
+### 使用方法
+
 
 更新1:背景变暗配置示例：
 
@@ -44,6 +86,19 @@ dependencies {
                 .create()
                 .showAsDropDown(mButton1,0,10);
 ```
+
+更新3:点击PopupWindow以外区域不让关闭(默认DisMiss)：
+
+```java
+ mPopWindow = new CustomPopWindow.PopupWindowBuilder(this)
+                .setView(view)
+                .enableOutsideTouchableDissmiss(false)// 设置点击PopupWindow之外的地方，popWindow不关闭，如果不设置这个属性或者为true，则关闭
+                .create();
+
+        mPopWindow.showAsDropDown(mButton7,0,10);
+```
+
+
 
 1，简便写法
 ```java
@@ -143,4 +198,36 @@ private void showPopListView(){
         adapter.notifyDataSetChanged();
 
     }
+```
+
+### 联系方式
+ 简书:[http://www.jianshu.com/u/35167a70aa39](http://www.jianshu.com/u/35167a70aa39)
+ 
+ 掘金：[https://juejin.im/user/56949a9960b2e058a42be0ba](https://juejin.im/user/56949a9960b2e058a42be0ba)
+ 
+ 公众号：**Android技术杂货铺**
+ 
+ QQ技术交流群：**155971357**
+ 
+ 欢迎关注我的公众号，第一时间获取我的博客更新提醒，以及更多有价值的原创Android干货文章、职场经验、面试技巧等等。
+ 长按下方二维码即可关注。
+
+ ![gzh.jpg](image/gzh.jpg)
+
+### License
+
+```
+   Copyright (C) 2017 zhouwei
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
 ```

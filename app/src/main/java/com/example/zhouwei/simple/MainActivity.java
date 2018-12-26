@@ -1,16 +1,19 @@
 package com.example.zhouwei.simple;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSeekBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.PopupWindow;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,11 +24,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
-    private TextView mButton1,mButton2,mButton3,mButton4,mButton5,mButton6;
+    private TextView mButton1,mButton2,mButton3,mButton4,mButton5,mButton6,mButton7;
     private CustomPopWindow mCustomPopWindow;
     private CustomPopWindow mListPopWindow;
     private AppCompatSeekBar mAppCompatSeekBar;
-
+    private CustomPopWindow mPopWindow;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +46,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mButton5.setOnClickListener(this);
         mButton6 = (TextView) findViewById(R.id.button6);
         mButton6.setOnClickListener(this);
+        mButton7 = (TextView) findViewById(R.id.button7);
+        mButton7.setOnClickListener(this);
 
 
         mAppCompatSeekBar = (AppCompatSeekBar) findViewById(R.id.seek_bar);
@@ -79,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()){
             case R.id.button1:
                 showPopBottom();
+                //test();
                 break;
             case R.id.button2:
                 showPopTop();
@@ -88,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.button4:
                 showPopListView();
+                //showListView();
                 break;
             case R.id.button5:
                 showPopTopWithDarkBg();
@@ -95,16 +102,66 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.button6:
                 useInAndOutAnim();
                 break;
+            case R.id.button7:
+                touchOutsideDontDisMiss();
+                break;
         }
     }
 
     private void showPopBottom(){
-        CustomPopWindow popWindow = new CustomPopWindow.PopupWindowBuilder(this)
+         CustomPopWindow popWindow = new CustomPopWindow.PopupWindowBuilder(this)
                 .setView(R.layout.pop_layout1)
                 .setFocusable(true)
                 .setOutsideTouchable(true)
-                .create()
-                .showAsDropDown(mButton1,0,10);
+                .create();
+         popWindow.showAsDropDown(mButton1,0,10);
+
+    }
+
+    /**
+     * 点击 PopupWindow 之外的地方不消失
+     */
+    private void touchOutsideDontDisMiss(){
+        View view = LayoutInflater.from(this).inflate(R.layout.pop_layout_close,null);
+        View.OnClickListener listener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e("FK","onClick.....");
+                mPopWindow.dissmiss();
+            }
+        };
+        view.findViewById(R.id.close_pop).setOnClickListener(listener);
+        mPopWindow = new CustomPopWindow.PopupWindowBuilder(this)
+                .setView(view)
+                .enableOutsideTouchableDissmiss(false)// 设置点击PopupWindow之外的地方，popWindow不关闭，如果不设置这个属性或者为true，则关闭
+                .create();
+
+        mPopWindow.showAsDropDown(mButton7,0,10);
+    }
+
+    private void test(){
+        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View contentview = inflater.inflate(R.layout.pop_layout1, null);
+        final PopupWindow popupWindow = new PopupWindow(contentview, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        //popupWindow
+        popupWindow.setFocusable(true);
+        popupWindow.setOutsideTouchable(false);
+        popupWindow.setBackgroundDrawable(null);
+
+        popupWindow.getContentView().setFocusable(true); // 这个很重要
+        popupWindow.getContentView().setFocusableInTouchMode(true);
+        popupWindow.getContentView().setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_BACK) {
+                    popupWindow.dismiss();
+
+                    return true;
+                }
+                return false;
+            }
+        });
+        popupWindow.showAsDropDown(mButton1, 0, 10);
     }
 
     private void showPopTop(){
@@ -127,6 +184,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setView(contentView)
                 .enableBackgroundDark(true) //弹出popWindow时，背景是否变暗
                 .setBgDarkAlpha(0.7f) // 控制亮度
+                .setOnDissmissListener(new PopupWindow.OnDismissListener() {
+                    @Override
+                    public void onDismiss() {
+                        Log.e("TAG","onDismiss");
+                    }
+                })
                 .create()
                 .showAsDropDown(mButton5,0,20);
     }
